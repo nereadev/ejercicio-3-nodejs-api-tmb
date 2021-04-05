@@ -24,16 +24,16 @@ const server = app.listen(puerto, () => {
 app.use(morgan("dev"));
 app.use(express.static("public"));
 app.get("/metro/lineas", (req, res, next) => {
-  res.send("respuesta lineas API");
+  res.json("respuesta lineas API");
   next();
 });
-app.get("/metro/:linea?", (req, res, next) => {
+app.get("/metro/lineas/:linea?", (req, res, next) => {
   const { linea } = req.params;
-  res.send("linea API");
+  res.json("linea API");
   next();
 });
 app.get("/", (req, res, next) => {
-  res.redirect("/metro/:lineas");
+  res.redirect("/metro/lineas");
 });
 app.use((err, req, res, nett) => {
   debug(err);
