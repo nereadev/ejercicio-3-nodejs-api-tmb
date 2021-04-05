@@ -22,9 +22,12 @@ const server = app.listen(puerto, () => {
 
 app.use(morgan("dev"));
 app.use(express.static("public"));
-app.get("/", (req, res, next) => {
+app.get("/metro/:lineas", (req, res, next) => {
   res.send("respusta lineas API");
   next();
+});
+app.get("/", (req, res, next) => {
+  res.redirect("/metro/:lineas");
 });
 app.use((err, req, res, nett) => {
   debug(err);
