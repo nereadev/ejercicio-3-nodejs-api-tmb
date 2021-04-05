@@ -8,9 +8,8 @@ const { response } = require("express");
 const { consultarLineas } = require("./fetchApi");
 
 const url = `${process.env.API_URL}?app_id=${process.env.API_ID}&app_key=${process.env.API_KEY}`;
-consultarLineas(url);
 
-/* program.option("-p, --puerto <puerto>", "Puerto para el servidor");
+program.option("-p, --puerto <puerto>", "Puerto para el servidor");
 program.parse(process.argv);
 const options = program.opts();
 const puerto = options.puerto || process.env.PUERTO || 5000;
@@ -23,8 +22,11 @@ const server = app.listen(puerto, () => {
 
 app.use(morgan("dev"));
 app.use(express.static("public"));
-app.get("/metro/:lineas", (req, res, next) => {
-  const { lineas } = req.params;
-  res.send("Acaba la prueba");
+app.get("/", (req, res, next) => {
+  res.send("respusta lineas API");
+  next();
 });
- */
+app.use((err, req, res, nett) => {
+  debug(err);
+  res.status(500).send("Ha fallado algo.");
+});
