@@ -20,23 +20,30 @@ const app = express();
 const server = app.listen(puerto, () => {
   debug(`Servidor escuchando en el puerto ${puerto}.`);
 });
+// npm portscanner permite evaluar qué puertos están disponibles
 
 app.use(morgan("dev"));
 app.use(express.static("public"));
-app.get("/metro/lineas", (req, res, next) => {
-  res.json("respuesta lineas API");
-  next();
+app.get("/metro/lineas", async (req, res, next) => {
+  consultarLineas(url).then(lineas => {
+    const lineaBuscada = lineas.features.map(linea => (
+      {
+        id: linea.properties.NOM_LINIA,
+        linea: linea.properties.NOM_LINIA,
+        descripcion: linea.properties.DESC_LINIA
+      }
+    ));
+    res.json(lineaBuscada);
+  });
 });
-app.get("/metro/lineas/:linea?", (req, res, next) => {
-  const { linea } = req.params;
-  res.json("linea API");
-  next();
+app.get("/metro/linea/:linea", (req, res, next) => {
+  res.send("linea API");
 });
 app.get("/", (req, res, next) => {
   res.redirect("/metro/lineas");
 });
 app.use((req, res, next) => {
-  res.status(404).json({ error: true, mensaje: "Recurso no encontrado" });
+  res.status(404).send({ error: true, mensaje: "Recurso no encontrado" });
 });
 app.use((err, req, res, nett) => {
   debug(err);
