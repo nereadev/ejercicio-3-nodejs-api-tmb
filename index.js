@@ -7,7 +7,14 @@ const { response } = require("express");
 const { consultarLineas, consultarLinea } = require("./fetchApi");
 
 const url = `${process.env.API_URL}?app_id=${process.env.API_ID}&app_key=${process.env.API_KEY}`;
-consultarLineas(url);
+
+const compruebaMetodos = (req, res, next) => {
+  const metodo = req.method;
+  if (["PUT", "POST", "DELETE"].includes(metodo)) {
+    res.json("Te pensabas que podías hackearme");
+  }
+  next();
+};
 
 program.option("-p, --puerto <puerto>", "Puerto para el servidor");
 program.parse(process.argv);
@@ -23,6 +30,7 @@ const server = app.listen(puerto, () => {
 
 app.use(morgan("dev"));
 app.use(express.static("public"));
+app.use(compruebaMetodos);
 app.get("/metro/lineas", async (req, res, next) => {
   consultarLineas(url).then(lineas => {
     const lineaBuscada = lineas.features.map(linea => (
