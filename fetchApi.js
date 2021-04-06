@@ -7,4 +7,12 @@ const consultarLineas = async (url) => {
   return respuestaJson;
 };
 
-module.exports = { consultarLineas };
+const consultarLinea = async (url, lineaElegida) => {
+  const lineas = await consultarLineas(url);
+  const lineaBuscada = lineas.features.find(
+    linea => linea.properties.NOM_LINIA.toLowerCase() === lineaElegida.toLowerCase()
+  );
+  return lineaBuscada;
+};
+
+module.exports = { consultarLineas, consultarLinea };

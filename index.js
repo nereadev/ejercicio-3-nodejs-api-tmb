@@ -4,8 +4,7 @@ const express = require("express");
 const { program } = require("commander");
 const morgan = require("morgan");
 const { response } = require("express");
-
-const { consultarLineas } = require("./fetchApi");
+const { consultarLineas, consultarLinea } = require("./fetchApi");
 
 const url = `${process.env.API_URL}?app_id=${process.env.API_ID}&app_key=${process.env.API_KEY}`;
 consultarLineas(url);
@@ -36,8 +35,16 @@ app.get("/metro/lineas", async (req, res, next) => {
     res.json(lineaBuscada);
   });
 });
-app.get("/metro/linea/:linea", (req, res, next) => {
-  res.send("linea API");
+app.get("/metro/linea/:linea", async (req, res, next) => {
+  const lineaBuscada = await consultarLinea(url, req.params.linea);
+  if (lineaBuscada) {
+    const codigoLinea = lineaBuscada.properties.CODI_LINIA;
+    const respuesta = {
+      linea: lineaBuscada.properties.NOM_LINIA,
+      descripcion: lineaBuscada.properties.DESC_LINIA,
+    };
+    res.json(respuesta);
+  }
 });
 app.get("/", (req, res, next) => {
   res.redirect("/metro/lineas");
